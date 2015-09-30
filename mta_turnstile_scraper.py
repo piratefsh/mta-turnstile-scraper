@@ -31,7 +31,7 @@ def init_db(database):
     print(header_and_datatypes)
     
     Q = {
-        'create' : 'CREATE TABLE entries (' + header_and_datatypes + ')'
+        'create' : 'CREATE TABLE IF NOT EXISTS entries (' + header_and_datatypes + ')'
     }
     print(Q['create'])
     connection = sqlite3.connect(database)
