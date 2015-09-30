@@ -50,10 +50,12 @@ def add_entry_db(line):
     count = 0
     for val in line.split(','):
         values.append("'" + val + "'")
-
-    insert_query = 'INSERT INTO entries VALUES(NULL, ' + ",".join(values) + ')'
-    trace(insert_query)
-    cursor.execute(insert_query)
+    
+    values.prepend(None)
+    values = tuple(values)
+    insert_query = 'INSERT INTO entries VALUES(?)'
+    trace(insert_query, values)
+    cursor.execute(insert_query, values)
     return
 
 """
@@ -82,5 +84,6 @@ def test():
     init_db()
     trace(cursor)
     add_entry_db('A002,R051,02-00-00,LEXINGTON AVE,NQR456,BMT,09/19/2015,00:00:00,REGULAR,0005317608,0001797091')
+    commit_db()
     assert len(cursor.execute('SELECT * FROM entries WHERE CA=?', ('A002',)).fetchall()) == 1
     trace('tests pass')
