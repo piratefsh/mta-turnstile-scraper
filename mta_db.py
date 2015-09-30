@@ -28,7 +28,6 @@ OVERRIDE_PROMPTS = False
 Given a turnstile data file, parse data and dump into database
 """
 def file_to_db(filename):
-
     with open(filename) as f:
         next(f) # skip header
         for line in f:
@@ -42,7 +41,9 @@ Given a file url, parse data and dump into db
 def url_to_db(url):
     with request.urlopen(url) as req:
         for line in req:
+            line = line.decode('utf-8')
             line = line.strip()
+            trace(line)
             if(len(line) > 1):
                 add_entry_db(line)
         commit_db()
@@ -110,5 +111,12 @@ def test():
     num_entries = len(cursor.execute('SELECT * FROM entries').fetchall())
     assert num_entries == 194625 
     
+    # test url
+    clear_db()
+    init_db()
+    url_to_db('http://web.mta.info/developers/data/nyct/turnstile/turnstile_150926.txt')
+    num_entries = len(cursor.execute('SELECT * FROM entries').fetchall())
+    assert num_entries == 194625 
+
     OVERRIDE_PROMPTS = False
-    trace('tests pass')
+    trace('tests pass') 
