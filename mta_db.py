@@ -40,7 +40,6 @@ Commit db entries
 """
 def commit_db():
     connection.commit()
-    trace('commit db')
     return
 
 """
@@ -62,7 +61,6 @@ Clear all tables
 """
 def clear_db():
     confirm = 'y'
-    trace(OVERRIDE_PROMPTS)
     if not OVERRIDE_PROMPTS:
         confirm = input('Sure you wanna drop all tables?')
     if confirm is 'y': 
@@ -98,7 +96,7 @@ def test():
     init_db()
     file_to_db('turnstile_150926.txt')
     num_entries = len(cursor.execute('SELECT * FROM entries').fetchall())
-    trace(num_entries)
     assert num_entries == 194625 
     
+    OVERRIDE_PROMPTS = False
     trace('tests pass')
