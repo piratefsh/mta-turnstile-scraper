@@ -100,4 +100,5 @@ def test():
     num_entries = len(cursor.execute('SELECT * FROM entries').fetchall())
     trace(num_entries)
     assert num_entries == 194625 
+    
     trace('tests pass')
