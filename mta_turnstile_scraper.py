@@ -46,14 +46,11 @@ Given a line of entry from raw, add that entry to db without commiting
 """
 def add_entry_db(line):
     # format values accordingly
-    values = []
-    count = 0
-    for val in line.split(','):
-        values.append("'" + val + "'")
-    
-    values.prepend(None)
+    values = line.split(',')
+    values.insert(0, None)
     values = tuple(values)
-    insert_query = 'INSERT INTO entries VALUES(?)'
+    placeholder = ",".join(['?']*(len(COLUMN_HEADERS)+1))
+    insert_query = 'INSERT INTO entries VALUES(' + placeholder + ')'
     trace(insert_query, values)
     cursor.execute(insert_query, values)
     return
