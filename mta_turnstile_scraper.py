@@ -21,6 +21,8 @@ DATABASE = 'test.db'
 connection = sqlite3.connect(DATABASE)
 cursor = connection.cursor()
 
+OVERRIDE_PROMPTS = False
+
 """
 Given a turnstile data file, parse data and dump into database
 """
@@ -29,7 +31,7 @@ def file_to_db(filename):
     with open(filename) as f:
         next(f) # skip header
         for line in f:
-            add_entry_db(line)
+            add_entry_db(line.strip())
     commit_db()
     return
 
@@ -51,7 +53,7 @@ def add_entry_db(line):
     values = tuple(values)
     placeholder = ",".join(['?']*(len(COLUMN_HEADERS)+1))
     insert_query = 'INSERT INTO entries VALUES(' + placeholder + ')'
-    trace(insert_query, values)
+    #trace(insert_query, values)
     cursor.execute(insert_query, values)
     return
 
@@ -59,9 +61,12 @@ def add_entry_db(line):
 Clear all tables
 """
 def clear_db():
-    confirm = input('Sure you wanna drop all tables?')
-    if confirm is 'y':
-        cursor.execute('DROP TABLE entries')
+    confirm = 'y'
+    trace(OVERRIDE_PROMPTS)
+    if not OVERRIDE_PROMPTS:
+        confirm = input('Sure you wanna drop all tables?')
+    if confirm is 'y': 
+        cursor.execute('DROP TABLE IF EXISTS entries')
         commit_db()
 
 """
@@ -78,9 +83,21 @@ def init_db():
     return
 
 def test():
+    global OVERRIDE_PROMPTS 
+    OVERRIDE_PROMPTS = True
+    clear_db()
+
+
     init_db()
-    trace(cursor)
     add_entry_db('A002,R051,02-00-00,LEXINGTON AVE,NQR456,BMT,09/19/2015,00:00:00,REGULAR,0005317608,0001797091')
     commit_db()
     assert len(cursor.execute('SELECT * FROM entries WHERE CA=?', ('A002',)).fetchall()) == 1
+    
+    # test file
+    clear_db()
+    init_db()
+    file_to_db('turnstile_150926.txt')
+    num_entries = len(cursor.execute('SELECT * FROM entries').fetchall())
+    trace(num_entries)
+    assert num_entries == 194625 
     trace('tests pass')
