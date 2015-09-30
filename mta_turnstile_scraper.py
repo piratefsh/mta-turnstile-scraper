@@ -9,6 +9,7 @@ Usage: python mta_turnsite_scraper.py <db>
 """
 
 import sqlite3
+from util import trace
 
 # Globals
 # Columns
@@ -37,6 +38,7 @@ Commit db entries
 """
 def commit_db():
     connection.commit()
+    trace('commit db')
     return
 
 """
@@ -53,7 +55,7 @@ def add_entry_db(line):
             values.append("'" + val + "'")
 
     insert_query = 'INSERT INTO entries VALUES(' + ",".join(values) + ')'
-    print(insert_query)
+    trace(insert_query)
     cursor.execute(insert_query)
     return
 
