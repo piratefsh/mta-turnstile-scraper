@@ -9,6 +9,7 @@ Usage: python mta_turnsite_scraper.py <db>
 """
 
 import sqlite3
+import urllib.request as request
 from util import trace
 
 # Globals
@@ -35,6 +36,17 @@ def file_to_db(filename):
     commit_db()
     return
 
+"""
+Given a file url, parse data and dump into db
+"""
+def url_to_db(url):
+    with request.urlopen(url) as req:
+        for line in req:
+            line = line.strip()
+            if(len(line) > 1):
+                add_entry_db(line)
+        commit_db()
+        return
 """
 Commit db entries
 """
