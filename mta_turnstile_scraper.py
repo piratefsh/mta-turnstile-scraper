@@ -49,24 +49,38 @@ def add_entry_db(line):
     values = []
     count = 0
     for val in line.split(','):
-        if COLUMN_DATATYPES[count] == 'INTEGER':
-            values.append(val)
-        else:
-            values.append("'" + val + "'")
+        values.append("'" + val + "'")
 
-    insert_query = 'INSERT INTO entries VALUES(' + ",".join(values) + ')'
+    insert_query = 'INSERT INTO entries VALUES(NULL, ' + ",".join(values) + ')'
     trace(insert_query)
     cursor.execute(insert_query)
     return
+
+"""
+Clear all tables
+"""
+def clear_db():
+    confirm = input('Sure you wanna drop all tables?')
+    if confirm is 'y':
+        cursor.execute('DROP TABLE entries')
+        commit_db()
 
 """
 Set up database
 """
 def init_db():
     # create headers for entries 
-    header_and_datatypes = ", ".join([COLUMN_HEADERS[i] + ' ' + COLUMN_DATATYPES[i] for i in range(len(COLUMN_HEADERS))])
+
+    header_and_datatypes = "id INTEGER PRIMARY KEY AUTOINCREMENT,  " + ", ".join([COLUMN_HEADERS[i] + ' ' + COLUMN_DATATYPES[i] for i in range(len(COLUMN_HEADERS))])
     create_query =  'CREATE TABLE IF NOT EXISTS entries (' + header_and_datatypes + ')'
     
     # create 'entries' table
     cursor.execute(create_query)
     return
+
+def test():
+    init_db()
+    trace(cursor)
+    add_entry_db('A002,R051,02-00-00,LEXINGTON AVE,NQR456,BMT,09/19/2015,00:00:00,REGULAR,0005317608,0001797091')
+    assert len(cursor.execute('SELECT * FROM entries WHERE CA=?', ('A002',)).fetchall()) == 1
+    trace('tests pass')
