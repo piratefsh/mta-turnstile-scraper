@@ -28,7 +28,7 @@ python mta_main.py mta_sept.db 01-09-2015 30-09-2015
 
 ## Output
 
-Sample output:
+For the lazy: [Sample data for September 2015](http://piratefsh.github.io/mta-turnstile-scraper/test/mta-turnstile-2015-sept.db)
 
 Newer format.
 
