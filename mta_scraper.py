@@ -23,7 +23,7 @@ def get_site():
 def get_turnstile_links(html):
     soup = BeautifulSoup(html, 'html.parser')
     links = soup.find_all('a')
-    turnstile_links = [(link.text, MTA_FILE_ROOT_URL + link['href']) for link in links if re.match('Saturday.*20..', link.text)]
+    turnstile_links = [(link.text, MTA_FILE_ROOT_URL + link['href']) for link in links if re.match('.*day.*20..', link.text)]
     return turnstile_links 
 
 def get_links_by_date(start, end):
@@ -42,7 +42,7 @@ def get_links():
 def test():
     content = get_site()
     links = get_turnstile_links(content)
-    assert len(links) == 280 #legit as of 30 Sept 2015
+    assert len(links) == 282 #legit as of 30 Sept 2015
 
     r = get_links_by_date(datetime(2015, 8, 1), datetime(2015, 8, 31))
     assert len(r) == 5 # 5 entries for August 2015 
