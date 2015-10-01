@@ -26,7 +26,6 @@ def main():
 
     # init db
     trace('initializing db:', dbname)
-    db.clear_db()
     db.init_db(dbname)
     
     # get links
