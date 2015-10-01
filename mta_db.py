@@ -152,7 +152,7 @@ def test():
     # test file
     clear_db()
     init_db()
-    file_to_db('turnstile_150926.txt')
+    file_to_db('test/turnstile_150926.txt')
     num_entries = len(cursor.execute('SELECT * FROM entries').fetchall())
     assert num_entries == 194625 
     

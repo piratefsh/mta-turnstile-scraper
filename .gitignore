@@ -65,3 +65,7 @@ target/
 Session.vim
 .netrwhist
 *~
+
+# Ignore any db
+*.db
+*.db-journal
