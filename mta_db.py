@@ -107,8 +107,12 @@ def add_entry_db(line):
     placeholder = ",".join(['?']*(len(COLUMN_HEADERS)+1))
     insert_query = 'INSERT INTO entries VALUES(' + placeholder + ')'
     #trace(insert_query, values)
+    
+    if(len(values) != 12):
+        return False#skip if not enough values
+
     cursor.execute(insert_query, values)
-    return
+    return True
 
 """
 Clear all tables
@@ -145,9 +149,14 @@ def test():
     clear_db()
 
     init_db()
-    add_entry_db('A002,R051,02-00-00,LEXINGTON AVE,NQR456,BMT,09/19/2015,00:00:00,REGULAR,0005317608,0001797091')
+    success = add_entry_db('A002,R051,02-00-00,LEXINGTON AVE,NQR456,BMT,09/19/2015,00:00:00,REGULAR,0005317608,0001797091')
     commit_db()
+    assert success == True
     assert len(cursor.execute('SELECT * FROM entries WHERE CA=?', ('A002',)).fetchall()) == 1
+    
+    # bad format
+    success = add_entry_db('A002,R051,02-00-00,LEXINGTON AVE,NQR456,BMT,09/19/2015,00:00:00,REGU')
+    assert success == False
     
     # test file
     clear_db()
