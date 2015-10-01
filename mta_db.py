@@ -165,4 +165,12 @@ def test_util():
     assert converted[0] == "A022,R022,01-00-01,STATION,LINENAME,DIVISION,04-23-10,04:00:00,RECOVR,012277581,004593025"
     assert converted[2] == "A022,R022,01-00-01,STATION,LINENAME,DIVISION,04-23-10,12:00:00,REGULAR,012278037,004593983"
     
+    # test insertion of old format into db
+    clear_db()
+    init_db()
+    url_to_db('http://web.mta.info/developers/data/nyct/turnstile/turnstile_120128.txt')
+    success_entries = cursor.execute('SELECT COUNT(*) FROM entries').fetchone()[0]
+    assert success_entries == 206758
+
+
     trace('tests pass')
