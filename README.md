@@ -8,7 +8,7 @@ Supports older 2014 formats and converts them to the newer formats.
 ```
 python mta_main.py <db name> <start date: DD-MM-YYYY> <end date: DD-MM-YYYY>
 ```
-Where <db name> is an empty database. Data will be added to a table `entries`.
+Where `<db name>` is an empty database created by you. Data will be added to a table `entries`.
 
 ### Example:
 
