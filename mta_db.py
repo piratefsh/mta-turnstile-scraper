@@ -123,7 +123,8 @@ def init_db():
     # create headers for entries 
 
     header_and_datatypes = "id INTEGER PRIMARY KEY AUTOINCREMENT,  " + ", ".join([COLUMN_HEADERS[i] + ' ' + COLUMN_DATATYPES[i] for i in range(len(COLUMN_HEADERS))])
-    create_query =  'CREATE TABLE IF NOT EXISTS entries (' + header_and_datatypes + ')' # create 'entries' table cursor.execute(create_query)
+    create_query =  'CREATE TABLE IF NOT EXISTS entries (' + header_and_datatypes + ')' # create 'entries' table 
+    cursor.execute(create_query)
     return
 
 def test():
