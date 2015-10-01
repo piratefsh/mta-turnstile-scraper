@@ -40,14 +40,49 @@ Given a file url, parse data and dump into db
 """
 def url_to_db(url):
     with request.urlopen(url) as req:
-        for line in req:
-            line = line.decode('utf-8')
-            line = line.strip()
-            trace(line)
-            if(len(line) > 1):
-                add_entry_db(line)
+        # handle two formats
+        header = next(req)
+        if header.count(',') > 10:
+            # is old format
+            # c/a, unit
+            # scp, date, time, desc, entry, exit
+            for line in req:
+                l = convert_format(line)
+                add_entry_db(l)
+        else:
+            # is new format
+            for line in req:
+                line = line.decode('utf-8')
+                line = line.strip()
+                trace(line)
+                if(len(line) > 1):
+                    add_entry_db(line)
         commit_db()
         return
+
+"""
+Convert old line format to new
+"""
+
+def convert_format(line):
+    parts = line.split(',')
+    ca_and_unit = ",".join(parts[0:3])
+    data = parts[3:]
+    data_len = 5 
+    entries = [data[i:i+data_len] for i in range(0, len(data), data_len)] 
+    lines = []
+    for entry in entries:
+        date = entry[0]
+        time = entry[1]
+        desc = entry[2]
+        entries = entry[3]
+        exits = entry[4]
+        reformat = ["STATION", "LINENAME", "DIVISION", date, time, desc, entries, exits] 
+        l = ca_and_unit + ',' + ','.join(reformat) 
+        lines.append(l)
+    return lines
+
+
 """
 Commit db entries
 """
@@ -87,10 +122,7 @@ def init_db():
     # create headers for entries 
 
     header_and_datatypes = "id INTEGER PRIMARY KEY AUTOINCREMENT,  " + ", ".join([COLUMN_HEADERS[i] + ' ' + COLUMN_DATATYPES[i] for i in range(len(COLUMN_HEADERS))])
-    create_query =  'CREATE TABLE IF NOT EXISTS entries (' + header_and_datatypes + ')'
-    
-    # create 'entries' table
-    cursor.execute(create_query)
+    create_query =  'CREATE TABLE IF NOT EXISTS entries (' + header_and_datatypes + ')' # create 'entries' table cursor.execute(create_query)
     return
 
 def test():
@@ -119,4 +151,16 @@ def test():
     assert num_entries == 194625 
 
     OVERRIDE_PROMPTS = False
-    trace('tests pass') 
+
+    trace('tests pass')
+
+
+def test_util():
+    # test conversion
+    old = "A022,R022,01-00-01,04-23-10,04:00:00,RECOVR,012277581,004593025,04-23-10,08:00:00,AUD,012277627,004593158,04-23-10,12:00:00,REGULAR,012278037,004593983,04-23-10,16:00:00,REGULAR,012279285,004594519,04-23-10,20:00:00,REGULAR,012281573,004594935"
+
+    converted = convert_format(old)
+    assert converted[0] == "A022,R022,01-00-01,STATION,LINENAME,DIVISION,04-23-10,04:00:00,RECOVR,012277581,004593025"
+    assert converted[2] == "A022,R022,01-00-01,STATION,LINENAME,DIVISION,04-23-10,12:00:00,REGULAR,012278037,004593983"
+    
+    trace('tests pass')
