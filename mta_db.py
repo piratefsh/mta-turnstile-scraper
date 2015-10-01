@@ -77,7 +77,8 @@ def convert_format(line):
         desc = entry[2]
         entries = entry[3]
         exits = entry[4]
-        reformat = ["STATION", "LINENAME", "DIVISION", date, time, desc, entries, exits] 
+        # Empty data fields for stuff we dont know yet
+        reformat = ["NULL", "NULL", "NULL", date, time, desc, entries, exits] 
         l = ca_and_unit + ',' + ','.join(reformat) 
         lines.append(l)
     return lines
@@ -96,6 +97,11 @@ Given a line of entry from raw, add that entry to db without commiting
 def add_entry_db(line):
     # format values accordingly
     values = line.split(',')
+
+    # replace 'NULL' string with None
+    # for cases where val not available for old format
+    values = [e if e != 'NULL' else None for e in values]
+
     values.insert(0, None)
     values = tuple(values)
     placeholder = ",".join(['?']*(len(COLUMN_HEADERS)+1))
@@ -134,8 +140,9 @@ def init_db(dbname=DATABASE):
 def test():
     global OVERRIDE_PROMPTS 
     OVERRIDE_PROMPTS = True
+    # init cursor and connection then clear
+    init_db()
     clear_db()
-
 
     init_db()
     add_entry_db('A002,R051,02-00-00,LEXINGTON AVE,NQR456,BMT,09/19/2015,00:00:00,REGULAR,0005317608,0001797091')
@@ -166,10 +173,11 @@ def test_util():
     old = "A022,R022,01-00-01,04-23-10,04:00:00,RECOVR,012277581,004593025,04-23-10,08:00:00,AUD,012277627,004593158,04-23-10,12:00:00,REGULAR,012278037,004593983,04-23-10,16:00:00,REGULAR,012279285,004594519,04-23-10,20:00:00,REGULAR,012281573,004594935"
 
     converted = convert_format(old)
-    assert converted[0] == "A022,R022,01-00-01,STATION,LINENAME,DIVISION,04-23-10,04:00:00,RECOVR,012277581,004593025"
-    assert converted[2] == "A022,R022,01-00-01,STATION,LINENAME,DIVISION,04-23-10,12:00:00,REGULAR,012278037,004593983"
+    assert converted[0] == "A022,R022,01-00-01,NULL,NULL,NULL,04-23-10,04:00:00,RECOVR,012277581,004593025"
+    assert converted[2] == "A022,R022,01-00-01,NULL,NULL,NULL,04-23-10,12:00:00,REGULAR,012278037,004593983"
     
     # test insertion of old format into db
+    init_db()
     clear_db()
     init_db()
     url_to_db('http://web.mta.info/developers/data/nyct/turnstile/turnstile_120128.txt')

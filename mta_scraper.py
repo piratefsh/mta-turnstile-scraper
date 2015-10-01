@@ -25,6 +25,9 @@ def get_turnstile_links(html):
     turnstile_links = [MTA_FILE_ROOT_URL + link['href'] for link in links if re.match('Saturday.*20..', link.text)]
     return turnstile_links 
 
+def get_links():
+    return get_turnstile_links(get_site())
+
 def test():
     content = get_site()
     links = get_turnstile_links(content)
