@@ -19,8 +19,8 @@ COLUMN_DATATYPES = "TEXT,TEXT,TEXT,TEXT,TEXT,TEXT,DATE,TIME,TEXT,INTEGER,INTEGER
 
 # Database
 DATABASE = 'test.db'
-connection = sqlite3.connect(DATABASE)
-cursor = connection.cursor()
+connection = None
+cursor = None #to be init in init_db()
 
 OVERRIDE_PROMPTS = False
 
@@ -55,7 +55,6 @@ def url_to_db(url):
             # is new format
             for line in req:
                 line = line.decode('utf-8').strip()
-                trace(line)
                 if(len(line) > 1):
                     add_entry_db(line)
         commit_db()
@@ -110,6 +109,8 @@ Clear all tables
 """
 def clear_db():
     confirm = 'y'
+    if cursor is None:
+        return
     if not OVERRIDE_PROMPTS:
         confirm = input('Sure you wanna drop all tables?')
     if confirm is 'y': 
@@ -119,8 +120,11 @@ def clear_db():
 """
 Set up database
 """
-def init_db():
+def init_db(dbname=DATABASE):
     # create headers for entries 
+    global connection, cursor
+    connection = sqlite3.connect(dbname)
+    cursor = connection.cursor()
 
     header_and_datatypes = "id INTEGER PRIMARY KEY AUTOINCREMENT,  " + ", ".join([COLUMN_HEADERS[i] + ' ' + COLUMN_DATATYPES[i] for i in range(len(COLUMN_HEADERS))])
     create_query =  'CREATE TABLE IF NOT EXISTS entries (' + header_and_datatypes + ')' # create 'entries' table 
@@ -171,6 +175,5 @@ def test_util():
     url_to_db('http://web.mta.info/developers/data/nyct/turnstile/turnstile_120128.txt')
     success_entries = cursor.execute('SELECT COUNT(*) FROM entries').fetchone()[0]
     assert success_entries == 206758
-
 
     trace('tests pass')
