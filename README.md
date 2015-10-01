@@ -34,3 +34,6 @@ id|CA|UNIT|SCP|STATION|LINENAME|DIVISION|DATE|TIME|DESC|ENTRIES|EXITS
 10|A002|R051|02-00-00||||01-23-12|23:00:00|REGULAR|3485128|1203846
 ```
 
+## Tests
+
+Simple tests available for each source code file in the files themselves. Note `mta_db.py` needs a `test.db` to run tests.
