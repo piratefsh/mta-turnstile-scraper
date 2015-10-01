@@ -41,19 +41,20 @@ Given a file url, parse data and dump into db
 def url_to_db(url):
     with request.urlopen(url) as req:
         # handle two formats
-        header = next(req)
+        header = next(req).decode('utf-8')
         if header.count(',') > 10:
             # is old format
             # c/a, unit
             # scp, date, time, desc, entry, exit
             for line in req:
-                l = convert_format(line)
-                add_entry_db(l)
+                line = line.decode('utf-8').strip()
+                entries = convert_format(line)
+                for l in entries:
+                    add_entry_db(l)
         else:
             # is new format
             for line in req:
-                line = line.decode('utf-8')
-                line = line.strip()
+                line = line.decode('utf-8').strip()
                 trace(line)
                 if(len(line) > 1):
                     add_entry_db(line)
