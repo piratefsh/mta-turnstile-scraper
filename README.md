@@ -10,6 +10,16 @@ python mta_main.py <db name> <start date: DD-MM-YYYY> <end date: DD-MM-YYYY>
 ```
 Where `<db name>` is an empty database created by you. Data will be added to a table `entries`.
 
+### To create an empty SQLite database
+
+```
+$ sqlite3 test.db 
+sqlite > .database
+sqlite > .exit
+```
+
+And `test.db` should now exist in your directory
+
 ### Example:
 
 ```
