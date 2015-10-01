@@ -30,7 +30,7 @@ def main():
     db.init_db(dbname)
     
     # get links
-    links = scraper.get_links()
+    links = scraper.get_links_by_date(start_date, end_date)
     
     # for each link, do url_to_db
     for date,link in links:
