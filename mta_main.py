@@ -14,14 +14,14 @@ def main():
     dbname = ""
     start_date = datetime(2010, 5, 5)
     end_date = datetime.now()
-    date_format = "%d-%m-%Y"
+    date_format = "%Y-%m-%d"
 
     if(len(sys.argv) == 4):
         dbname = sys.argv[1]
         start_date = datetime.strptime(sys.argv[2], date_format)
         end_date = datetime.strptime(sys.argv[3], date_format)
     else:
-        print("Usage: mta_main.py <db name> <start date: DD-MM-YYYY> <end date: DD-MM-YYYY>")
+        print("Usage: mta_main.py <db name> <start date: YYYY-MM-DD> <end date: YYYY-MM-DD>")
         return
 
     # init db
