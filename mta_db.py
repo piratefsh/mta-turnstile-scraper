@@ -11,6 +11,7 @@ Usage: python mta_turnsite_scraper.py <db>
 import sqlite3
 import urllib.request as request
 from util import trace
+from datetime import datetime
 
 # Globals
 # Columns
@@ -103,7 +104,12 @@ def add_entry_db(line):
     values = [e if e != 'NULL' else None for e in values]
 
     values.insert(0, None)
+    
+    # format date
+    values[7] = datetime.strftime(datetime.strptime(values[7], '%m/%d/%Y'), '%Y-%m-%d')
+
     values = tuple(values)
+    
     placeholder = ",".join(['?']*(len(COLUMN_HEADERS)+1))
     insert_query = 'INSERT INTO entries VALUES(' + placeholder + ')'
     #trace(insert_query, values)
