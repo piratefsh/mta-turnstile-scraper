@@ -74,7 +74,7 @@ def convert_format(line):
     lines = []
     for entry in entries:
         # convert date to new date format
-        date = datetime.strftime(datetime.strptime(entry[0], "%d-%m-%y"),"%m/%d/%Y")
+        date = datetime.strftime(datetime.strptime(entry[0], "%m-%d-%y"),"%m/%d/%Y")
         time = entry[1]
         desc = entry[2]
         entries = entry[3]

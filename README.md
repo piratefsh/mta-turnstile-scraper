@@ -10,7 +10,7 @@ Supports older 2014 formats and converts them to the newer formats.
 python mta_main.py <db name> <start date: YYYY-MM-DD> <end date: YYYY-MM-DD>
 ```
 
-Where `<db name>` is an empty database created by you. Data will be added to a table `entries`.
+Where `<db name>` is an empty database. Will be created if does not exists, else will just append to existing database. Data will be added to a table `entries`.
 
 ### To create an empty SQLite database
 
@@ -48,7 +48,8 @@ id|CA|UNIT|SCP|STATION|LINENAME|DIVISION|DATE|TIME|DESC|ENTRIES|EXITS
 10|A002|R051|02-00-00|LEXINGTON AVE|NQR456|BMT|09/20/2015|12:00:00|REGULAR|5318797|1797443
 ```
 
-Older 2014 format. Note that Station, Linename and Division data is missing
+Older 2014 format. Note that Station, Linename and Division data is missing. Date format has also been formatted to be the same as newer format: `YYYY-MM-DD`.
+
 ```
 id|CA|UNIT|SCP|STATION|LINENAME|DIVISION|DATE|TIME|DESC|ENTRIES|EXITS
 1|A002|R051|02-00-00||||01-22-12|11:00:00|REGULAR|3483225|1203166
