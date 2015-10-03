@@ -15,8 +15,8 @@ from datetime import datetime
 
 # Globals
 # Columns
-COLUMN_HEADERS = "CA,UNIT,SCP,STATION,LINENAME,DIVISION,DATE,TIME,DESC,ENTRIES,EXITS".split(',') 
-COLUMN_DATATYPES = "TEXT,TEXT,TEXT,TEXT,TEXT,TEXT,DATE,TIME,TEXT,INTEGER,INTEGER".split(',')
+COLUMN_HEADERS = "CA,UNIT,SCP,STATION,LINENAME,DIVISION,DATETIME,TIME,DESC,ENTRIES,EXITS".split(',') 
+COLUMN_DATATYPES = "TEXT,TEXT,TEXT,TEXT,TEXT,TEXT,DATETIME,TIME,TEXT,INTEGER,INTEGER".split(',')
 
 # Database
 DATABASE = 'test.db'
@@ -106,9 +106,8 @@ def add_entry_db(line):
 
     values.insert(0, None)
     
-    # format date
-    values[7] = datetime.strftime(datetime.strptime(values[7], '%m/%d/%Y'), '%Y-%m-%d')
-
+    # format datetime
+    values[7] = datetime.strftime(datetime.strptime("%s %s" % (values[7], values[8]), '%m/%d/%Y %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
     values = tuple(values)
     
     placeholder = ",".join(['?']*(len(COLUMN_HEADERS)+1))
