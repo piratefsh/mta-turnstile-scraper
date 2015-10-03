@@ -6,10 +6,8 @@ Supports older 2014 formats and converts them to the newer formats.
 ## Usage
 
 ```
-
-python mta_main.py <db name> <start date: YYYY-MM-DD> <end date: YYYY-MM-DD>
+python mta_main.py <db name> <start date: DD-MM-YYYY> <end date: DD-MM-YYYY>
 ```
-
 Where `<db name>` is an empty database created by you. Data will be added to a table `entries`.
 
 ### To create an empty SQLite database
@@ -25,7 +23,7 @@ And `test.db` should now exist in your directory
 ### Example:
 
 ```
-python mta_main.py mta_sept.db 2015-09-01 2015-09-30
+python mta_main.py mta_sept.db 01-09-2015 30-09-2015
 ```
 
 ## Output
