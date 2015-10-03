@@ -73,7 +73,8 @@ def convert_format(line):
     entries = [data[i:i+data_len] for i in range(0, len(data), data_len)] 
     lines = []
     for entry in entries:
-        date = entry[0]
+        # convert date to new date format
+        date = datetime.strftime(datetime.strptime(entry[0], "%d-%m-%y"),"%m/%d/%Y")
         time = entry[1]
         desc = entry[2]
         entries = entry[3]
